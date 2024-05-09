@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->string('role')->default('translator');
-            $table->rememberToken();
+            $table->string('image')->nullable();
             $table->timestamps();
         });
 

@@ -175,8 +175,42 @@
             color: #fff;
             font-weight: bold;
         }
+        .user-profile {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+
+        .user-name {
+            position: absolute;
+            top: 100px;
+            right: 20px;
+        }
+
+        .user-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 2px solid #007bff;
+            transition: transform 0.3s ease;
+        }
+
+        .user-image:hover {
+            transform: scale(1.1);
+        }
     </style>
 </head>
+<header>
+    <div class="user-profile">
+        <a href="/profile">
+            <img src="{{ auth()->user()->image ? auth()->user()->image : 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/2048px-Default_pfp.svg.png' }}" alt="User Image" class="user-image">
+        </a>
+    </div>
+
+    <div class="user-name">
+        <p>{{ auth()->user()->firstname }}</p>
+    </div>
+</header>
 <body>
 <div id="myModal" class="modal">
     <div class="modal-content">
@@ -226,8 +260,6 @@
 </div>
 
 <a href="/home" class="home-link">Home</a>
-<br><!-- Home page link -->
-<a href="/profile" class="profile-link">{{auth()->user()->firstname}}</a> <!-- Home page link -->
 <div class="container">
     <h2>{{ $project->name }}
         @if(auth()->user()->role == 'manager')
@@ -237,13 +269,6 @@
     <p><strong>Description:</strong> {{ $project->description }}</p>
 
     <p><strong>Words Count:</strong> {{ $project->words_count }}/{{ $count }}</p>
-
-    <!-- Progress Bar -->
-    <div class="progress-bar">
-        <div class="progress" style="width: {{ (floatval($count) / $project->words_count) * 100 }}%;">
-            {{ round(($count/floatval($project->words_count)) * 100) }}%
-        </div>
-    </div>
 
     <p><strong>Due Date:</strong> {{ date('d M Y',strtotime($project->due_date)) }}</p>
 
@@ -289,7 +314,7 @@
                     <form method="POST" action="/projects/remove-member/{{ $project->id }}">
                         @csrf
                         <input type="hidden" name="member" value="{{ $member->id }}">
-                        <input type="submit" value="Remove Member">
+                        <input style="max-width: 120px;" type="submit" value="Remove Member">
                     </form>
                 @endif
             </li>
@@ -305,7 +330,7 @@
                     <option value="{{ $translator->id }}">{{ $translator->firstname }}</option>
                 @endforeach
             </select>
-            <input type="submit" value="Add Member">
+            <input style="max-width: 120px;" type="submit" value="Add Member">
         </form>
     @endif
 
@@ -318,7 +343,7 @@
                     <option value="{{ $chief->id }}">{{ $chief->firstname }}</option>
                 @endforeach
             </select>
-            <input type="submit" value="Add Member">
+            <input style="max-width: 120px;" type="submit" value="Add Member">
         </form>
     @endif
 
