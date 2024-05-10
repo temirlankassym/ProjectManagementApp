@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\StaffController;
 use App\Http\Controllers\TaskController;
 use Illuminate\Support\Facades\Route;
 
@@ -35,4 +36,12 @@ Route::middleware(['auth'])->group(function (){
 
     Route::post("/profile", [ProfileController::class, 'update']);
     Route::get("/profile", [ProfileController::class, 'index']);
+    Route::get("/profile/{user}", [ProfileController::class, 'show']);
+
+    Route::get("/mark/{notification}", [ProfileController::class, 'mark']);
+    Route::delete('/delete/{project}', [ProjectController::class, 'delete']);
+
+    Route::get('/staff', [StaffController::class, 'index']);
+    Route::get('/archive', [ProjectController::class, 'archive']);
+    Route::get("/archive-projects/{id}", [ProjectController::class, 'archiveShow']);
 });

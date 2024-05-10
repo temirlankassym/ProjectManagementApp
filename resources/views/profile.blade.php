@@ -6,6 +6,9 @@
     <title>User Profile</title>
     <style>
         body {
+            background-image: url('https://www.womanhit.ru/media/CACHE/images/articleimage2/2019/2/oblozhka2_RHcI5EA/d3bc898886715775afb73d942e95336a.webp');
+            background-repeat: no-repeat;
+            background-size: cover;
             font-family: Arial, sans-serif;
             background-color: #f8f9fa;
             color: #333;
@@ -105,6 +108,20 @@
             text-decoration: none;
             cursor: pointer;
         }
+        .navbar {
+            max-width: 40px;
+            background-color: #f8f9fa;
+            padding: 10px 20px;
+            margin-bottom: 20px;
+        }
+        .navbar a {
+            text-decoration: none;
+            color: #007bff;
+            font-weight: bold;
+        }
+        .navbar a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -116,11 +133,11 @@
         <form id="profileForm" method="POST" action="/profile" enctype="multipart/form-data">
             @csrf
             <label for="firstname">First Name:</label>
-            <input type="text" id="firstname" name="firstname" value="{{ auth()->user()->firstname }}" required><br>
+            <input type="text" id="firstname" name="firstname" value="{{ $user->firstname }}" required><br>
             <label for="lastname">Last Name:</label>
-            <input type="text" id="lastname" name="lastname" value="{{ auth()->user()->lastname }}" required><br>
+            <input type="text" id="lastname" name="lastname" value="{{ $user->lastname }}" required><br>
             <label for="email">Email:</label>
-            <input type="email" id="email" name="email" value="{{ auth()->user()->email }}" required><br>
+            <input type="email" id="email" name="email" value="{{ $user->email }}" required><br>
             <label for="image">Image:</label>
             <input type="file" id="image" name="image"><br>
             <input type="submit" value="Update Profile">
@@ -128,16 +145,22 @@
     </div>
 </div>
 
+<div class="navbar">
+    <a href="/home">Home</a>
+</div>
+
 <div class="container">
     <h1>User Profile</h1>
-    <a href="/home">Home</a>
     <div class="profile-info">
-        <img src="{{ auth()->user()->image}}" alt="Profile Picture">
+        <img src="{{ $user->image ?: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/2048px-Default_pfp.svg.png' }}" alt="Profile Picture">
         <div class="profile-details">
-            <h2>{{ auth()->user()->firstname }} {{ auth()->user()->lastname }}</h2>
-            <p><strong>Email:</strong> {{ auth()->user()->email }}</p>
-            <p><strong>Role:</strong> {{ auth()->user()->role }}</p>
-            <p><strong>Joined:</strong> {{ date('M d, Y', strtotime(auth()->user()->created_at)) }}</p>
+            <h2>{{ $user->firstname }} {{ $user->lastname }}</h2>
+            <p><strong>Email:</strong> {{ $user->email }}</p>
+            <p><strong>Role:</strong> {{ $user->role }}</p>
+            @if($user->role == 'translator')
+                <p><strong>Number of Mistakes:</strong> {{ $user->mistakes }}</p>
+            @endif
+            <p><strong>Joined:</strong> {{ date('M d, Y', strtotime($user->created_at)) }}</p>
         </div>
     </div>
     <div class="button-container">

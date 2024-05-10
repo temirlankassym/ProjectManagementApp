@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedInteger('task_id');
             $table->unsignedInteger('member_id');
-            $table->unsignedInteger('path');
+            $table->string('path');
             $table->unsignedInteger('words_count');
             $table->timestamps();
 

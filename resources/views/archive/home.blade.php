@@ -261,46 +261,22 @@
         .project-card {
             margin: 10px;
         }
+        .archive{
+            position: absolute;
+            top: 0px;
+            left: 450px;
+            margin-top: 100px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
-<!-- Add this inside your <body> tag -->
-<div id="notificationModal" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        @if(auth()->user()->role == 'translator')
-            @foreach(auth()->user()->notifications as $notification)
-                <div class="notification">
-                    <div class="notification-info">
-                        <span class="notification-description">{{ $notification->description }}.</span>
-                        <span class="notification-date">Created at: {{date('H:i d M Y',strtotime($notification->created_at))}}</span>
-                    </div>
-                    <a href="/mark/{{$notification->id}}">
-                        <img style="margin-left: 30px;max-width: 30px" src="https://cdn.pixabay.com/photo/2017/09/29/00/30/checkmark-icon-2797531_960_720.png" alt="">
-                    </a>
-                </div>
-            @endforeach
-        @endif
-    </div>
-</div>
 
 <header>
-    @if(auth()->user()->role == 'manager')
-        <a style="margin-left: 15px;color: white;text-decoration: none" href="/staff">View Staff</a>
-    @endif
-    <div class="notification-icon">
-        @if(auth()->user()->role == 'translator')
-            <img style="width: 60px;height: 60px" src="https://static.vecteezy.com/system/resources/previews/010/366/210/original/bell-icon-transparent-notification-free-png.png" alt="Notification Icon">
-            <span class="notification-count">{{ auth()->user()->notifications->count() }}</span>
-        @endif
+    <div class="archive">
+        <a href="/home"><button>Home</button></a>
     </div>
-
     <div class="header-content">
-        <div class="metrics">
-            <h2>Translation Statistics</h2>
-            <p>Translated words: {{ $translatedWords }}</p>
-            <p>Words left: {{ max(0, $wordsLeft) }}</p>
-        </div>
         <h1>Projects Dashboard</h1>
         <nav>
             <a href="/logout">Logout</a>
@@ -315,29 +291,15 @@
 
 <main class="container">
     <div class="projects">
-        @foreach($projects->where('status', 'uncompleted') as $project)
+        @foreach($projects->where('status', 'completed') as $project)
         <div class="project-card">
                 <h2>{{ $project->name }}</h2>
                 <p>{{ $project->description }}</p>
-                <div class="progress-bar" style="max-width:400px ;width: 100%; height: 30px; background-color: #ddd; border-radius: 5px; margin-top: 10px; overflow: hidden;">
-                    <div class="progress" style="height: 100%; width: {{ $project->words_count != 0 ? (floatval($project->count) / $project->words_count) * 100 : 0 }}%; background-color: #007bff; transition: width 0.3s ease; text-align: center; line-height: 30px; color: #fff; font-weight: bold;">
-                        {{ $project->words_count != 0 ? round(($project->count/floatval($project->words_count)) * 100) : 0 }}%
-                    </div>
-                </div>
                 <p class="due-date">Due: {{ date('M d, Y', strtotime($project->due_date)) }}</p>
-                <a href="/projects/{{ $project->id }}" class="more-info">More Info</a>
-            </div>
+                <a href="/archive-projects/{{ $project->id }}" class="more-info">More Info</a>
+        </div>
         @endforeach
     </div>
-
-    @if(auth()->user()->role == 'manager')
-        <div class="create-project">
-            <button id="createProjectButton">Create New Project</button>
-        </div>
-        <div class="archive">
-            <a href="/archive"><button>View finished projects</button></a>
-        </div>
-    @endif
 
     <div id="myModal" class="modal">
         <div class="modal-content">

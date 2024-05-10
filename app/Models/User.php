@@ -52,4 +52,9 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Project::class, 'project_members', 'member_id', 'project_id');
     }
+
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class, 'receiver', 'email');
+    }
 }

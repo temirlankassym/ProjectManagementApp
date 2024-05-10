@@ -42,11 +42,11 @@
     </style>
 </head>
 <body>
-<h1>Welcome to our App</h1>
+<h1>Welcome to EasyLang</h1>
 <div class="options">
     <a href="/login">Login</a>
     <a href="/register">Register</a>
 </div>
-<img src="https://preview.redd.it/hi-this-is-a-logo-for-the-task-manager-application-called-v0-si3hzlaglc7b1.png?width=640&crop=smart&auto=webp&s=04d231d246026a59f988ac183a82e0ea2ca8ef4e" alt="App Image" class="app-img">
+<img src="https://www.brightcarbon.com/wp/wp-content/uploads/2020/07/Online-Presentation-Skills-Training_Artboard-01.png" alt="App Image" class="app-img">
 </body>
 </html>

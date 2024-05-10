@@ -17,9 +17,9 @@ class ProjectController extends Controller
     {
         $translators = User::where('role','translator')->get();
         if(auth()->user()->role == 'manager')
-            $projects = Project::all();
+            $projects = Project::orderBy('created_at', 'desc')->get();
         else{
-            $projects = auth()->user()->projects;
+            $projects = auth()->user()->projects()->orderBy('created_at', 'desc')->get();
         }
 
         foreach ($projects as $project) {
@@ -38,13 +38,14 @@ class ProjectController extends Controller
         $totalWords = 0;
         $translatedWords = 0;
 
+        $completedWords = $projects->where('status', 'completed')->sum('words_count');
+
         foreach ($projects as $project) {
             $totalWords += $project->words_count;
             $translatedWords += $project->count;
         }
 
-        $wordsLeft = $totalWords - $translatedWords;
-
+        $wordsLeft = $totalWords - $translatedWords - $completedWords;
 
         return view('home', ['projects' => $projects,'translators'=>$translators,'totalWords' => $totalWords, 'translatedWords' => $translatedWords, 'wordsLeft' => $wordsLeft]);
     }
@@ -56,8 +57,8 @@ class ProjectController extends Controller
         $tasks = Task::where('project_id', $id)->get();
         $chiefs = User::where('role','chief')->get();
 
-        $documents = Document::whereHas('task', function ($query) {
-            $query->where('status', 'completed');
+        $documents = Document::whereHas('task', function ($query) use ($id) {
+            $query->where('status', 'completed')->where('project_id', $id);
         })->get();
 
         $count = 0;
@@ -73,7 +74,7 @@ class ProjectController extends Controller
         $data = $request->validated();
         $data['project_manager'] = auth()->user()->email;
 
-        $project = Project::create($data);
+        Project::create($data);
 
         return redirect('/home');
     }
@@ -96,5 +97,41 @@ class ProjectController extends Controller
         ProjectMember::where('project_id', $id)->where('member_id', $request['member'])->delete();
 
         return redirect("/projects/$id");
+    }
+
+    public function delete(Project $project)
+    {
+        $project->delete();
+
+        return redirect('/home')->with('status', 'Project deleted successfully.');
+    }
+
+    public function archive()
+    {
+        $completedProjects = Project::where('status', 'completed')->get();
+
+        $translators = User::where('role','translator')->get();
+
+        $totalWords = $completedProjects->sum('words_count');
+        $translatedWords = $completedProjects->sum('count');
+        $wordsLeft = $totalWords - $translatedWords;
+
+        return view('archive.home', [
+            'projects' => $completedProjects,
+            'translators' => $translators,
+            'totalWords' => $totalWords,
+            'translatedWords' => $translatedWords,
+            'wordsLeft' => $wordsLeft
+        ]);
+    }
+
+    public function archiveShow($id)
+    {
+        $project = Project::find($id);
+        $translators = User::where('role','translator')->get();
+        $tasks = Task::where('project_id', $id)->get();
+        $chiefs = User::where('role','chief')->get();
+
+        return view('archive.project', ['project' => $project, 'translators' => $translators, 'chiefs'=>$chiefs, 'tasks' => $tasks]);
     }
 }
